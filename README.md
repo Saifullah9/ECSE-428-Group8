@@ -10,7 +10,7 @@ Here's a link to Windows installers if you have Windows: https://github.com/UB-M
 Next cd into SupplyHero_FastApi:
 ``` pip install -r requirements.txt ```
 
-Run the file from inside SupplyHero_FastApi
+Run the server from inside SupplyHero_FastApi
 ``` uvicorn api.main:app --reload ```
 
 And you're done for backend installation
