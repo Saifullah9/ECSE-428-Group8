@@ -5,7 +5,7 @@ This is a repository for group 8 from the course ECSE 428 which will hold their 
 Make sure you have installed Tesseract OCR (Don't forget to add to PATH variable!)
 https://tesseract-ocr.github.io/tessdoc/Downloads
 
-Next:
+Next cd into SupplyHero_FastApi:
 ``` pip install -r requirements.txt ```
 
 Run the file from inside SupplyHero_FastApi
