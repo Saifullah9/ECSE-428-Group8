@@ -15,7 +15,15 @@ Run the server from inside SupplyHero_FastApi
 
 And you're done for backend installation
 
-# More info coming for Frontend
+# How to Install Frontend (SupplyHero_React)
+
+cd into frontend-app
+
+``` npm install ```
+
+Followed by 
+
+``` npm start ```
 
 
 
