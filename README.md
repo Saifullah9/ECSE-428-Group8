@@ -6,6 +6,7 @@ Make sure you have installed Tesseract OCR (**Don't forget to add to PATH variab
 https://tesseract-ocr.github.io/tessdoc/Downloads
 
 Here's a link to Windows installers if you have Windows: https://github.com/UB-Mannheim/tesseract/wiki
+If you have MacOS -> Download Tesseract OCR using Homebrew: https://brew.sh/
 
 Next cd into SupplyHero_FastApi:
 ``` pip install -r requirements.txt ```
@@ -17,11 +18,13 @@ And you're done for backend installation
 
 # How to Install Frontend (SupplyHero_React)
 
-cd into frontend-app
+Make sure you have Node.js https://nodejs.org/en/download/
+
+From the root SupplyHero_React folder, cd into frontend-app and enter the following:
 
 ``` npm install ```
 
-Followed by 
+You can run the frontend on your local development using the following:
 
 ``` npm start ```
 
