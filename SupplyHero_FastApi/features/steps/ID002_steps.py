@@ -25,7 +25,6 @@ def step_impl(context):
 @then('user should receive a school supply list')
 def step_impl(context):
     response_json = context.response.json()
-    print(response_json)
     assert type(response_json['list']) is list 
 
 @given('user selected a file that is a PDF')
