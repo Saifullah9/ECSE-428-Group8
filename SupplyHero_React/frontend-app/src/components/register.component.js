@@ -67,7 +67,7 @@ export default class Register extends Component{
         return(
             <div>
               <h3>Register</h3>
-              <form onSubmit={this.onSubmit}>
+              <form onSubmit={this.handleSubmit}>
                 <div className="form-group">
                     <label>Email: </label>
                     <input
