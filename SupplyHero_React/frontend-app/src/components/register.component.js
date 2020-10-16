@@ -4,19 +4,19 @@ export default class Register extends Component{
     constructor(props){
         super(props);
 
-        this.onChangeUsername = this.onChangeUsername.bind(this);
+        this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
-            username: '',
+            email: '',
             password: '',
         }
     }
 
-    onChangeUsername(e){
+    onChangeEmail(e){
         this.setState({
-            username: e.target.value
+            email: e.target.value
         });
     }
 
@@ -26,18 +26,18 @@ export default class Register extends Component{
         });
     }
 
-    onSubmit(e){
+    handleSubmit(e){
         e.preventDefault();
 
         const user = {
-            username:this.state.username,
+            email:this.state.email,
             password:this.state.password,
         }
 
-        console.log(user);
+        console.log('hello world');
 
         this.setState({
-            username:'',
+            email:'',
             password:'',
         })
 
@@ -69,14 +69,14 @@ export default class Register extends Component{
               <h3>Register</h3>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
-                    <label>Username: </label>
+                    <label>Email: </label>
                     <input
                         type="text"
                         required
-                        value={this.state.username}
+                        value={this.state.email}
                         placeholder="Enter your email"
                         className="form-control"
-                        onChange={this.onChangeUsername}
+                        onChange={this.onChangeEmail}
                     />
                     <label>Password: </label>
                     <input
@@ -89,7 +89,7 @@ export default class Register extends Component{
                     />
                     </div>
                     <div className="form-group">
-                <input type="submit" value="Register" onClick={this.onSubmit} className="btn btn-primary" />
+                <input type="submit" value="Register" onSubmit={this.handleSubmit} className="btn btn-primary" />
                 </div>
               </form>
             </div>
