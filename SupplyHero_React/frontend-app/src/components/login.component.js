@@ -4,7 +4,8 @@ export default class Login extends Component{
     render(){
         return(
             <div>
-                <p>Your are now on the Login component</p>
+              <p>Your are now on the Login component</p>
+              <form>
                 <h1>Login</h1>
                 <input
                 name="email"
@@ -18,6 +19,10 @@ export default class Login extends Component{
                 placeholder="Enter your password"
                 className="textbox"
                 />
+                <button className="btn" type="submit">
+                Login
+                </button>
+              </form>
             </div>
         )
     }
