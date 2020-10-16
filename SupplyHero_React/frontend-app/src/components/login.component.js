@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 export default class Login extends Component{
     constructor(props){
@@ -35,6 +36,9 @@ export default class Login extends Component{
         }
 
         console.log(user);
+
+        axios.post('http://localhost:8000/login')
+        .then(res => console.log(res.data));
 
         this.setState({
             username:'',
