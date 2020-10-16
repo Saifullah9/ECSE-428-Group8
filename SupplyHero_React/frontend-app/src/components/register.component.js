@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 export default class Register extends Component{
     constructor(props){
@@ -9,14 +10,14 @@ export default class Register extends Component{
         this.onSubmit = this.onSubmit.bind(this);
         
         this.state = {
-            username: '',
+            email: '',
             password: '',
         }
     }
 
     onChangeUsername(e){
         this.setState({
-            username: e.target.value
+            email: e.target.value
         });
     }
 
@@ -30,14 +31,20 @@ export default class Register extends Component{
         e.preventDefault();
 
         const user = {
-            username:this.state.username,
+            email:this.state.email,
             password:this.state.password,
         }
 
         console.log(user);
 
+        /*
+        this is commented out till the post request is completed in the backend
+        */
+       // axios.post('http://localhost:8000/login') 
+       // .then(res => console.log(res.data));
+
         this.setState({
-            username:'',
+            email:'',
             password:'',
         })
         //window.location = '/' // reroutes to home page after submitting
@@ -56,7 +63,7 @@ export default class Register extends Component{
                     <input
                         type="text"
                         required
-                        value={this.state.username}
+                        value={this.state.email}
                         placeholder="Enter your email"
                         className="form-control"
                         onChange={this.onChangeUsername}
