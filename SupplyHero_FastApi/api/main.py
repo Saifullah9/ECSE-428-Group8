@@ -22,11 +22,21 @@ app.add_middleware(
 )
 
 
+class User(models.BaseUser):
+    password: str
+
+
+@app.post("/login")
+async def login(user: User):
+    print(user.email)
+
+
 @app.post("/upload")
 async def create_uploaded_file(file: UploadFile = File(...)):
     if file.content_type == 'image/jpeg' or file.content_type == 'image/png':
-        supply_str = pytesseract.image_to_string(Image.open(file.file)).splitlines()
-    elif file.content_type == 'application/pdf': # Will need Poppler
+        supply_str = pytesseract.image_to_string(
+            Image.open(file.file)).splitlines()
+    elif file.content_type == 'application/pdf':  # Will need Poppler
         image_obj = convert_from_bytes(file.file.read())
         if len(image_obj) > 1:
             return {'error': 'PDF contains more than 1 page.'}
