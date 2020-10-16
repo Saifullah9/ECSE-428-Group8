@@ -2,6 +2,8 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pdf2image import convert_from_bytes
+from mongo.py import MongoSession
+
 try:
     from PIL import Image
 except ImportError:
@@ -28,7 +30,11 @@ class User(models.BaseUser):
 
 @app.post("/login")
 async def login(user: User):
-    print(user.email)
+    db_school_supply = MongoSession('user-list')
+    if db_school_supply.authenticate(user):
+        return user
+    else:
+        return {'error': 'Invalid authentication'}
 
 
 @app.post("/upload")
@@ -47,6 +53,7 @@ async def create_uploaded_file(file: UploadFile = File(...)):
     print(supply_str)
     return {"filename": file.filename,
             "list": supply_str}
+
 
 @app.get("/")
 async def main():

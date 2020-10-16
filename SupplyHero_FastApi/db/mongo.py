@@ -12,6 +12,15 @@ class MongoSession:
     def insert_json(self, document):
         self.collection.insert_one(document)
 
+    def authenticate(self, document):
+        isAuthenticated = False
+        record = self.collection.find_one({"email": document.email})
+        if record:
+            if record.password == document.password:
+                isAuthenticated = True
+
+        return isAuthenticated
+
 
 # example of a mongoSession
 db_school_supply = MongoSession('school-supply-list')
