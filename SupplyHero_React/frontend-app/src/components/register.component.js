@@ -4,19 +4,19 @@ export default class Register extends Component{
     constructor(props){
         super(props);
 
-        this.onChangeEmail = this.onChangeEmail.bind(this);
+        this.onChangeUsername = this.onChangeUsername.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-
+        
         this.state = {
-            email: '',
+            username: '',
             password: '',
         }
     }
 
-    onChangeEmail(e){
+    onChangeUsername(e){
         this.setState({
-            email: e.target.value
+            username: e.target.value
         });
     }
 
@@ -26,39 +26,22 @@ export default class Register extends Component{
         });
     }
 
-    handleSubmit(e){
+    onSubmit(e){
         e.preventDefault();
 
         const user = {
-            email:this.state.email,
+            username:this.state.username,
             password:this.state.password,
         }
 
-        console.log('hello world');
+        console.log(user);
 
         this.setState({
-            email:'',
+            username:'',
             password:'',
         })
-
-        fetch('http://localhost:8000/register', {
-          method: "POST",
-          headers: {
-            Accept: "application/json","Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email: "test@gmail.com",
-            password: "mypassword"
-          })
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .catch(e => {
-            console.log(e)
-        })
         //window.location = '/' // reroutes to home page after submitting
-
+        
     }
 
 
@@ -69,14 +52,14 @@ export default class Register extends Component{
               <h3>Register</h3>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
-                    <label>Email: </label>
+                    <label>Username: </label>
                     <input
                         type="text"
                         required
-                        value={this.state.email}
+                        value={this.state.username}
                         placeholder="Enter your email"
                         className="form-control"
-                        onChange={this.onChangeEmail}
+                        onChange={this.onChangeUsername}
                     />
                     <label>Password: </label>
                     <input
@@ -89,7 +72,7 @@ export default class Register extends Component{
                     />
                     </div>
                     <div className="form-group">
-                <input type="submit" value="Register" onSubmit={this.handleSubmit} className="btn btn-primary" />
+                <input type="submit" value="Register" className="btn btn-primary" />
                 </div>
               </form>
             </div>

@@ -37,8 +37,11 @@ export default class Login extends Component{
 
         console.log(user);
 
-        axios.post('http://localhost:8000/login')
-        .then(res => console.log(res.data));
+        /*
+        this is commented out till the post request is completed in the backend
+        */
+       // axios.post('http://localhost:8000/login') 
+       // .then(res => console.log(res.data));
 
         this.setState({
             username:'',
