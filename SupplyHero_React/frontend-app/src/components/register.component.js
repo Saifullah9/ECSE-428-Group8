@@ -7,7 +7,7 @@ export default class Register extends Component{
         this.onChangeUsername = this.onChangeUsername.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-        
+
         this.state = {
             username: '',
             password: '',
@@ -40,8 +40,25 @@ export default class Register extends Component{
             username:'',
             password:'',
         })
+
+        fetch('http://localhost:8000/register', {
+          method: "POST",
+          headers: {
+            Accept: "application/json","Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: "test@gmail.com",
+            password: "mypassword"
+          })
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .catch(e => {
+            console.log(e)
+        })
         //window.location = '/' // reroutes to home page after submitting
-        
+
     }
 
 
@@ -72,7 +89,7 @@ export default class Register extends Component{
                     />
                     </div>
                     <div className="form-group">
-                <input type="submit" value="Register" className="btn btn-primary" />
+                <input type="submit" value="Register" onClick={this.onSubmit} className="btn btn-primary" />
                 </div>
               </form>
             </div>
