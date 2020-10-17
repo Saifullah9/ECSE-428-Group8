@@ -15,6 +15,8 @@ export default class Register extends Component{
         }
     }
 
+
+    
     onChangeUsername(e){
         this.setState({
             email: e.target.value
