@@ -1,11 +1,11 @@
 from behave import *
 import jwt
 import fastapi_users
-from db.mongo import MongoSession
+from db.mongo_regular import MongoSessionRegular
 from fastapi.testclient import TestClient
 from api import main
 from api.config import SECRET
-
+from uuid import UUID
 
 """
 Step Definitions for ID003_Log_In 
@@ -14,7 +14,7 @@ Step Definitions for ID003_Log_In
 
 @given('user has user has created an account with {email} and {password}')
 def step_impl(context, email, password):
-    context.mongo_sesh = MongoSession(collection='users')
+    context.mongo_sesh = MongoSessionRegular(collection='users')
     context.register = {"email": email, "password": password}
     context.test_client = TestClient(main.app)
     context.response = context.test_client.post("/register", json=context.register)
@@ -34,10 +34,12 @@ def step_impl(context, email, password):
 @then('the {email} and {password} information is correct')
 def step_impl(context, email, password):
     context.data = jwt.decode(context.access_token, SECRET, algorithms=['HS256'], audience="fastapi-users:auth")
-    user = context.mongo_sesh.find_json({"user_id": context.data["user_id"]})
+    uuid_object = UUID(context.data["user_id"])
+    user = context.mongo_sesh.find_json({"id": uuid_object})
     found_user = user["email"]
     found_pass = fastapi_users.password.get_password_hash(context.password)
-    print(found_user)
+    print(user)
+    print(found_pass)
     assert found_user == email
     assert found_pass == password
 
