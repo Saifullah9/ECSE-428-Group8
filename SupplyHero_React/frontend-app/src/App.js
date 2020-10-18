@@ -33,14 +33,17 @@ function App() {
       <ImageUpload /> 
       
     </div>*/}
+    
     <Navbar />
       <br/>
       <Route path = "/" exact component={SupplyList} />
       <Route path = "/register"  component={Register} />
       <Route path = "/login"  component={Login} />
       <Route path = "/logout"  component={Logout} />
-      <Route path = "/upload/:id"  component={Upload} />
+      <Route path = "/upload"  component={Upload} />
+      
     </Router>
+            
   );
 }
 

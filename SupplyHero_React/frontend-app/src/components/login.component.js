@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import ls from 'local-storage'
 
 export default class Login extends Component{
+
     constructor(props){
         super(props);
 
@@ -36,12 +38,18 @@ export default class Login extends Component{
         }
 
         console.log(user);
+        const dataForm = new FormData();
+        dataForm.append('username', this.state.username);
+        dataForm.append('password', this.state.password);
+        
 
         /*
         this is commented out till the post request is completed in the backend
         */
-       // axios.post('http://localhost:8000/login') 
-       // .then(res => console.log(res.data));
+        axios.post('http://localhost:8000/login', dataForm) 
+        .then(res => {console.log(res.data)
+        localStorage.setItem('Login_token', res.data.access_token)});
+
 
         this.setState({
             username:'',
