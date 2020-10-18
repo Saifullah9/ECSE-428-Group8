@@ -14,7 +14,7 @@ So that I can login to my SupplyHero account
   Scenario: Registering for an already existing account (Error Flow)
   
     Given user who does not have an existing account
-    When user requests to login
+    When user requests to register
     But user already has an existing account
     Then user is informed that 'An account with that email already exists.'
   
