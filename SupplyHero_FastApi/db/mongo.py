@@ -12,4 +12,8 @@ class MongoSession:
     def insert_json(self, document):
         return self.collection.insert_one(document)
 
+    def find_json(self, document):
+        return self.collection.find_one(document)
 
+    def delete_json(self, document):
+        return self.collection.remove(document)
