@@ -6,7 +6,7 @@ python:
 # command to install dependencies
 
 before_install:
-  - sudo apt install tesseract-ocr
+  - sudo apt update sudo apt install tesseract-ocr
 
 install:
   - pip install -r SupplyHero_FastApi/requirements.txt
