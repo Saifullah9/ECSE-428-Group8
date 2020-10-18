@@ -4,26 +4,32 @@ As a SupplyHero user
 I want to login to my user account
 So that I can access my SupplyHero account services
 
-  Scenario: Login to Account (Normal Flow)
+  Scenario Outline: Login to Account (Normal Flow)
   
-    Given user has an existing account
-     When user has requested to login with their <email> and <password>
-     And <email> and <password> information is correct
-     Then user is logged in
-     
-    |email		    	    	| password	 | 
-    |parent@hotmail.com 	| a!s@d#	   | 
-    |child@hotmail.com 		| asd!@#	   | 
+    Given user has user has created an account with <email> and <password>
+    When user has requested to login with their <email> and <password>
+    Then the <email> and <password> information is correct
+    And the user has logged in successfully
+
+    Examples:
+      |email		    	    	| password	    |
+      |parent@hotmail.com 	        | a!s@d#	    |
+      |child@hotmail.com 		    | asd!@#	    |
 
      
-  Scenario: Fail to Login (Error Flow)
+  Scenario Outline: Fail to Login (Error Flow)
   
-    Given user has an existing account
-     When user has entered their following login information
-    |Email		    		    | Password	 | 
-    |parent@hotmail.com 	| blahblah	 |
-     And login information is incorrect
-     Then a "Invalid Email/Password." message is shown
+    Given user has user has created an account with <email> and <password>
+    When user has requested to login with their incorrect <bad_email> or <bad_password>
+    Then the <bad_email> and <bad_password> information is incorrect
+    And an "Invalid Email/Password." message is shown
+
+    Examples:
+      | email		    		    | password	 | bad_email            | bad_password     |
+      | dad@hotmail.com 	        | blahblah	 | dad@hotmail.ca       | blahblah         |
+      | dad@hotmail.com 	        | blahblah	 | dad@hotmail.com      | blah             |
+
+
 
 
 

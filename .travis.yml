@@ -1,0 +1,18 @@
+language: python
+python:
+  #- "3.6"      # current default Python on Travis CI
+  - "3.8"       # project version of python
+  #- "3.11"
+# command to install dependencies
+
+before_install:
+  - sudo apt-get install tesseract-ocr
+  - sudo apt-get install poppler-utils
+
+install:
+  - pip install -r SupplyHero_FastApi/travis_requirements.txt
+# command to run tests
+script:
+  - cd SupplyHero_FastApi
+  - behave -e ID005
+  - python -m pytest

@@ -7,14 +7,13 @@ So that I can login to my SupplyHero account
   
     Given user who does not have an existing account
     When user requests to register with the following information
-    |email		   		| password	 | repeat_password	|
-    |parent@hotmail.com	| a!s@d#	 | a!s@d#			|
+    |email		   		| password	 |
+    |kaldamzxmczk12@hotmail.com	| a!s@d#	 |
     Then a new account is created
     
   Scenario: Registering for an already existing account (Error Flow)
   
-    Given user who does not have an existing account
-    When user requests to register
-    But user already has an existing account
-    Then user is informed that 'An account with that email already exists.'
+    Given user who already have an existing account
+    When user requests to register with the following information
+    Then user is informed that An account with that email already exists.
   
