@@ -27,7 +27,7 @@ def test_register_user():
         "detail": "REGISTER_USER_ALREADY_EXISTS"
     }
 
-    assert response.status_code == 201
+    assert response.status_code == 422
 
 
 def test_register_existing_user():
