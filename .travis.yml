@@ -14,5 +14,5 @@ install:
 # command to run tests
 script:
   - cd SupplyHero_FastApi
-  - behave -e ID005
+  - behave
   - python -m pytest
