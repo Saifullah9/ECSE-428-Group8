@@ -10,7 +10,7 @@ before_install:
   - sudo apt-get install python-poppler
 
 install:
-  - pip install -r SupplyHero_FastApi/requirements.txt
+  - pip install -r SupplyHero_FastApi/travis_requirements.txt
 # command to run tests
 script:
   - cd SupplyHero_FastApi
