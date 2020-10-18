@@ -17,18 +17,18 @@ def step_impl(context, email, password):
     context.mongo_sesh = MongoSessionRegular(collection='users')
     context.register = {"email": email, "password": password}
     context.test_client = TestClient(main.app)
-    context.response = context.test_client.post("/register", json=context.register)
-    # print(context.response.json())
+    context.response_register = context.test_client.post("/register", json=context.register)
+    print(context.response_register.json())
     context.user = email
     context.password = password
 
 
-@when('user has requested to login with their correct {email} and {password}')
+@when('user has requested to login with their {email} and {password}')
 def step_impl(context, email, password):
     context.login = {"username": email, "password": password}
-    context.response = context.test_client.post("/login", data=context.login)
-    # print(context.response.json())
-    context.access_token = context.response.json()["access_token"]
+    context.response_login = context.test_client.post("/login", data=context.login)
+    # print(context.response_login.json())
+    context.access_token = context.response_login.json()["access_token"]
 
 
 @then('the {email} and {password} information is correct')
@@ -45,7 +45,29 @@ def step_impl(context, email, password):
 
 @then('the user has logged in successfully')
 def step_impl(context):
-    context.status_code = context.response.status_code
-    #TODO: need cleanup to remove entries from db
+    context.status_code = context.response_login.status_code
     context.mongo_sesh.delete_json({"user_id": context.data["user_id"]})
     assert context.status_code == 200
+
+
+@when('user has requested to login with their incorrect {bad_email} or {bad_password}')
+def step_impl(context, bad_email, bad_password):
+    context.login = {"username": bad_email, "password": bad_password}
+    context.response_login = context.test_client.post("/login", data=context.login)
+    # print(context.response_login.json())
+
+
+@then('the {bad_email} and {bad_password} information is incorrect')
+def step_impl(context, bad_email, bad_password):
+    context.detail = context.response_login.json()["detail"]
+    assert context.detail == "LOGIN_BAD_CREDENTIALS"
+
+
+@then('an "Invalid Email/Password." message is shown')
+def step_impl(context):
+    context.status_code = context.response_login.status_code
+    # TODO: need cleanup to remove entries from db
+    # context_data = context.response_login.id
+    # print(context_data)
+    # context.mongo_sesh.delete_json({"user_id": context.data["user_id"]})
+    assert (context.status_code == 400)
