@@ -4,6 +4,7 @@ import 'filepond/dist/filepond.min.css';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/lib/ReactCrop.scss';
 import Button from '@material-ui/core/Button';
+import ls from 'local-storage'
 
 const pixelRatio = window.devicePixelRatio || 1;
 
@@ -140,7 +141,7 @@ function ImageUpload() {
                         var formData = new FormData();
                         var xhr = new XMLHttpRequest();
                         xhr.open("POST", "http://localhost:8000/upload")
-                        //xhr.setRequestHeader('Authorization', 'Bearer hefiafizepzgenozngopzngpzegn')
+                        xhr.setRequestHeader('Authorization', 'Bearer '+ localStorage.getItem('Login_token'))
                         formData.append("file", value);
                         xhr.send(formData);
                     });

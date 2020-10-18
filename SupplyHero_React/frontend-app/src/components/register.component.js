@@ -42,8 +42,8 @@ export default class Register extends Component{
         /*
         this is commented out till the post request is completed in the backend
         */
-       // axios.post('http://localhost:8000/login') 
-       // .then(res => console.log(res.data));
+        axios.post('http://localhost:8000/register', user) 
+        .then(res => console.log(res.data));
 
         this.setState({
             email:'',
