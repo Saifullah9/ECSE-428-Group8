@@ -5,6 +5,9 @@ python:
   #- "3.11"
 # command to install dependencies
 
+before_install:
+  - sudo apt install tesseract-ocr
+
 install:
   - pip install -r SupplyHero_FastApi/requirements.txt
 # command to run tests
