@@ -140,6 +140,7 @@ function ImageUpload() {
                         var formData = new FormData();
                         var xhr = new XMLHttpRequest();
                         xhr.open("POST", "http://localhost:8000/upload")
+                        //xhr.setRequestHeader('Authorization', 'Bearer hefiafizepzgenozngopzngpzegn')
                         formData.append("file", value);
                         xhr.send(formData);
                     });
