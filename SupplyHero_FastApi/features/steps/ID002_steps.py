@@ -18,14 +18,18 @@ def step_impl(context):
 @when('user requests to upload the file')
 def step_impl(context):
     context.test_client = TestClient(main.app)
+    context.login_info = {'username': 'parent@hotmail.com', 'password': 'a!s@d#'}
     context.file_obj = {'file': (context.file_name, context.image_file, context.file_content_type)}
-    context.response = context.test_client.post("/upload", files=context.file_obj)
-    assert context.response.status_code == 200 
+    context.login_response = context.test_client.post("/login", data=context.login_info)
+    context.headers = {"Authorization": "Bearer " + context.login_response.json()['access_token']}
+    context.response = context.test_client.post("/upload", files=context.file_obj, headers = context.headers)
+
 
 @then('user should receive a school supply list')
 def step_impl(context):
     response_json = context.response.json()
-    assert type(response_json['list']) is list 
+    assert response_json['Message'] == 'Success'
+
 
 @given('user selected a file that is a PDF')
 def step_impl(context):
@@ -46,4 +50,4 @@ def step_impl(context):
 @then('user is informed that "{error_str}"')
 def step_impl(context, error_str):
     response_json = context.response.json()
-    assert response_json['error'] == error_str
+    assert response_json['detail'] == error_str

@@ -14,4 +14,4 @@ install:
 # command to run tests
 script:
   - cd SupplyHero_FastApi
-  - behave -i ID003
+  - behave -e ID005
