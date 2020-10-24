@@ -1,3 +1,5 @@
+import uuid
+
 import pytesseract
 from db.mongo import MongoSession
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
@@ -10,6 +12,7 @@ from api.auth import fastapi_users
 router = APIRouter()
 
 # Database for school supply list
+supplies_metadata_db = MongoSession(collection='school_supplies_metadata')
 mongo_db_supplies = MongoSession(collection='school_supplies')
 
 
@@ -19,21 +22,33 @@ async def create_uploaded_file(user: User = Depends(fastapi_users.get_current_ac
     # Retrieve school supplies
     if file.content_type == 'image/jpeg' or file.content_type == 'image/png':
         supply_str = pytesseract.image_to_string(
-            Image.open(file.file)).splitlines()
+            Image.open(file.file))
+        supply_arr = supply_str.splitlines()
     elif file.content_type == 'application/pdf':  # Will need Poppler
         image_obj = convert_from_bytes(file.file.read())
         if len(image_obj) > 1:
             raise HTTPException(
                 status_code=400, detail="PDF contains more than 1 page.")
-        supply_str = pytesseract.image_to_string(image_obj[0]).splitlines()
+        supply_str = pytesseract.image_to_string(image_obj[0])
+        supply_arr = supply_str.splitlines()
     else:
         raise HTTPException(status_code=400, detail="File is not an image.")
-    supply_str = [elem for elem in supply_str if elem]
+    supply_arr = [elem for elem in supply_arr if elem]
 
-    # Store data to database
-    supplies_data = {'email': user.email,
-                     'filename': file.filename, 'school_supplies': supply_str}
-    supplies_data = mongo_db_supplies.insert_json(supplies_data)
+    # Store Metadata for Supply List & Data for Supply List
+    # Generate a unique UUID based on string
+    supply_uuid = uuid.uuid5(uuid.NAMESPACE_OID, supply_str)
+    # Metadata to DB
+    supplies_metadata_db.upsert_supply_list_metadata(user, supply_uuid)
+
+    supply_list_data = {"id": supply_uuid,
+                        "list_of_supplies": supply_arr,
+                        "original_creator": {
+                            "email": user.email
+                            }
+                        }
+    # Supply List Data to DB
+    supplies_data = mongo_db_supplies.upsert_supply_list(supply_list_data)
     if supplies_data:
         return {"Message": "Success"}
     else:
