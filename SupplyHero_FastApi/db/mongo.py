@@ -68,3 +68,13 @@ class MongoSessionRegular:
             {"$setOnInsert": supply_list_data},
             upsert=True,
         )
+
+    def remove_supply_list_metadata(self, email, supply_uuid):
+        return self.collection.update_one(
+            {"email": email},
+            {"$pull": {"school_supply_ids": supply_uuid}},
+            upsert=False,
+        )
+
+    def remove_supply_list(self, supply_uuid):
+        return self.collection.delete_one({"id": supply_uuid})

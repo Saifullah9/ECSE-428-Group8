@@ -1,8 +1,9 @@
 from behave import *
-from db.mongo import MongoSession
+from db.mongo import MongoSession, MongoSessionRegular
 from fastapi.testclient import TestClient
 from fastapi import UploadFile
 from api import main
+from uuid import UUID
 
 """
 Step Definitions for ID002_Upload_Image  
@@ -18,7 +19,7 @@ def step_impl(context):
 @when('user requests to upload the file')
 def step_impl(context):
     context.test_client = TestClient(main.app)
-    context.login_info = {'username': 'parent@hotmail.com', 'password': 'a!s@d#'}
+    context.login_info = {"username": "parent@hotmail.com", "password": "a!s@d#"}
     context.file_obj = {'file': (context.file_name, context.image_file, context.file_content_type)}
     context.login_response = context.test_client.post("/login", data=context.login_info)
     context.headers = {"Authorization": "Bearer " + context.login_response.json()['access_token']}
@@ -29,6 +30,10 @@ def step_impl(context):
 def step_impl(context):
     response_json = context.response.json()
     assert response_json['Message'] == 'Success'
+    metadata_sess = MongoSessionRegular(collection="school_supplies_metadata")
+    data_sess = MongoSessionRegular(collection="school_supplies")
+    metadata_sess.remove_supply_list_metadata(context.login_info['username'], UUID(response_json['school_supply_id']))
+    delete_result = data_sess.remove_supply_list(UUID(response_json['school_supply_id']))
 
 
 @given('user selected a file that is a PDF')

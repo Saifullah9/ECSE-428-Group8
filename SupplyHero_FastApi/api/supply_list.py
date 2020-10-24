@@ -39,7 +39,7 @@ async def create_uploaded_file(
 
     # Store Metadata for Supply List & Data for Supply List
     # Generate a unique UUID based on string
-    supply_uuid = uuid.uuid5(uuid.NAMESPACE_OID, supply_str)
+    supply_uuid = uuid.uuid5(uuid.NAMESPACE_OID, ''.join(supply_arr))
 
     # Metadata to DB
     metadata_update_result = supplies_metadata_db.upsert_supply_list_metadata(
@@ -53,7 +53,10 @@ async def create_uploaded_file(
         "original_creator": {"email": user.email},
     }
     mongo_db_supplies.upsert_supply_list(supply_list_data)
+
+
     if not metadata_update_result.upserted_id and metadata_update_result.modified_count == 0:
         raise HTTPException(status_code=400, detail="Data already exists in DB")
     else:
-        return {"Message": "Success"}
+        return {"Message": "Success",
+                "school_supply_id": supply_uuid}
