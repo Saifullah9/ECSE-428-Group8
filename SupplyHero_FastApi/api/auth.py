@@ -6,7 +6,7 @@ from model.user import User, UserCreate, UserDB, UserUpdate
 from api.config import jwt_authentication
 
 # Database for users
-mongo_db_users = MongoSession(collection='users')
+mongo_db_users = MongoSession(collection="users")
 user_db = MongoDBUserDatabase(UserDB, mongo_db_users.collection)
 
 # User Management
