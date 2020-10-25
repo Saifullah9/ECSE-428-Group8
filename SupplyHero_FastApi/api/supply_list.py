@@ -12,7 +12,8 @@ from api.auth import fastapi_users
 router = APIRouter()
 
 # Database for school supply list
-supplies_metadata_db = MongoSessionRegular(collection="school_supplies_metadata")
+supplies_metadata_db = MongoSessionRegular(
+    collection="school_supplies_metadata")
 mongo_db_supplies = MongoSessionRegular(collection="school_supplies")
 
 
@@ -50,13 +51,14 @@ async def create_uploaded_file(
     supply_list_data = {
         "id": supply_uuid,
         "list_of_supplies": supply_arr,
-        "original_creator": {"email": user.email},
+        "admin_ids": {"id": user.id},
+        "read_only_ids": {"id": user.id}
     }
     mongo_db_supplies.upsert_supply_list(supply_list_data)
 
-
     if not metadata_update_result.upserted_id and metadata_update_result.modified_count == 0:
-        raise HTTPException(status_code=400, detail="Data already exists in DB")
+        raise HTTPException(
+            status_code=400, detail="Data already exists in DB")
     else:
         return {"Message": "Success",
                 "school_supply_id": supply_uuid}
