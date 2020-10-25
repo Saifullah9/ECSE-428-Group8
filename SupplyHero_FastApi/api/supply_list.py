@@ -12,6 +12,9 @@ router = APIRouter()
 # Database for school supply list
 mongo_db_supplies = MongoSession(collection='school_supplies')
 
+# Database for supply ids
+mongo_db_supplies_ids = MongoSession(collection='school_supplies_metadata')
+
 
 @router.post("/upload")
 async def create_uploaded_file(user: User = Depends(fastapi_users.get_current_active_user),
@@ -39,3 +42,19 @@ async def create_uploaded_file(user: User = Depends(fastapi_users.get_current_ac
     else:
         raise HTTPException(
             status_code=400, detail="Could not send data to database.")
+
+@router.get("/download")
+async def get_all_lists(user: User = Depends(fastapi_users.get_current_active_user)):
+    query = {"email": user.email}
+    user_supply_ids = await mongo_db_supplies_ids.find_json(query)
+    all_lists = {'supply lists': []}
+    if user_supply_ids:
+        supply_ids = user_supply_ids['school_supply_ids']
+        lists = [await mongo_db_supplies.find_json({'id': id}) for id in supply_ids]
+        all_lists['supply_lists'] = lists
+        # for id in supply_ids:
+        #     id_query = {'id': id}
+        #     supply_list = mongo_db_supplies.find(id_query)
+        #     if supply_list:
+        #         all_lists['supply_lists'].append(supply_list)
+    return all_lists
