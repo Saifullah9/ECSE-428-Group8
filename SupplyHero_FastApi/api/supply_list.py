@@ -15,7 +15,6 @@ router = APIRouter()
 supplies_metadata_db = MongoSessionRegular(collection="school_supplies_metadata")
 mongo_db_supplies = MongoSessionRegular(collection="school_supplies")
 
-
 @router.post("/upload")
 async def create_uploaded_file(
     user: User = Depends(fastapi_users.get_current_active_user),
@@ -60,3 +59,22 @@ async def create_uploaded_file(
     else:
         return {"Message": "Success",
                 "school_supply_id": supply_uuid}
+
+@router.get("/download")
+async def get_all_lists(
+    user: User = Depends(fastapi_users.get_current_active_user)
+):
+    # Retrieve User's Supply List Metadata from DB
+    query = {"email": user.email}
+    user_supply_ids = supplies_metadata_db.find_json(query)
+    response = {"Message": "Success",
+                "supply_lists": []}
+
+    # Retrieve all Supply List Data from DB Based On Lists' IDs
+    if user_supply_ids:
+        supply_ids = user_supply_ids["school_supply_ids"]
+        lists = [mongo_db_supplies.find_json({"id": id}, {"_id": 0}) for id in supply_ids]
+        response["supply_lists"] = lists
+        return response
+    else:
+        raise HTTPException(status_code=400, detail="No file has been uploaded.")
