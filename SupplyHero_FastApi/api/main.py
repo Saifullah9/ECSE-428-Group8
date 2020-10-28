@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from model.user import User
 
 from api import supply_list
+from api import auth
 from api.auth import fastapi_users
 from api.config import jwt_authentication
 
@@ -30,6 +31,7 @@ app.include_router(fastapi_users.get_register_router(), tags=["auth"])
 
 # Routers for Logic related to School Supply Lists
 app.include_router(supply_list.router)
+app.include_router(auth.router2)
 
 
 @app.get("/")
