@@ -18,7 +18,7 @@ class MongoSession:
         return self.collection.find_one(document)
 
     def delete_json(self, document):
-        return self.collection.remove(document)
+        return self.collection.delete_one(document)
 
 
 class MongoSessionRegular:
@@ -31,11 +31,11 @@ class MongoSessionRegular:
     def insert_json(self, document):
         return self.collection.insert_one(document)
 
-    def find_json(self, document):
-        return self.collection.find_one(document)
+    def find_json(self, document, args=None):
+        return self.collection.find_one(document, args)
 
     def delete_json(self, document):
-        return self.collection.remove(document)
+        return self.collection.delete_one(document)
 
     def upsert_supply_list_metadata(self, user, supply_uuid):
         update_result = self.collection.update_one(
