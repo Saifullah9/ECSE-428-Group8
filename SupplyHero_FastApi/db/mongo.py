@@ -78,3 +78,15 @@ class MongoSessionRegular:
 
     def remove_supply_list(self, supply_uuid):
         return self.collection.delete_one({"id": supply_uuid})
+
+    def edit_supply_list_metadata(self, user, old_id, new_id):
+        return self.collection.update_one(
+            {"email": user.email, "school_supply_ids": old_id},
+            {"$set": {"school_supply_ids.$": new_id}}
+        )
+
+    def edit_supply_list(self, old_id, new_id, list_of_supplies):
+        return self.collection.update_one(
+            {"id": old_id},
+            {"$set": {"id": new_id, "list_of_supplies": list_of_supplies}}
+        )
