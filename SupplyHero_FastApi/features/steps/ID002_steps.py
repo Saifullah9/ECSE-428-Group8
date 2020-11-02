@@ -34,7 +34,7 @@ def step_impl(context):
     metadata_sess = MongoSessionRegular(collection="school_supplies_metadata")
     data_sess = MongoSessionRegular(collection="school_supplies")
     response_json = context.response.json()
-    metadata_sess.delete_json(context.login_info['username'])
+    metadata_sess.delete_json({"email":context.login_info['username']})
     delete_result = data_sess.remove_supply_list(UUID(response_json['school_supply_id']))
 
 
