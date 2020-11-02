@@ -59,3 +59,5 @@ def step_impl(context, error_message):
     data_sess = MongoSessionRegular(collection="school_supplies")
     metadata_sess.delete_json({"email": context.login['username']})
     data_sess.remove_supply_list(UUID(context.response_edit_json['school_supply_id']))
+    user_sess = MongoSessionRegular(collection='users')
+    user_sess.delete_json({"email": "kaldamzxmczk12@hotmail.com"})
