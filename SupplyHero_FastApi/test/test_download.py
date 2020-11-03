@@ -62,7 +62,7 @@
 #     #             "1 Box of Kleenex"
 #     #         ]
 #     assert download_response_json["supply_lists"][0]["original_creator"]["email"] == "parent@hotmail.com"
-    
+
 
 # def test_download_multiple_lists():
 #     # Login
