@@ -3,6 +3,7 @@ import uuid
 import pytesseract
 from db.mongo import MongoSession, MongoSessionRegular
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from model.supply_list import SupplyList
 from model.user import User
 from model.supply_list import SupplyListPrivilege
 from pdf2image import convert_from_bytes
@@ -124,3 +125,32 @@ async def create_uploaded_file(
         raise HTTPException(
             status_code=400, detail="Target user (" +
             supply_list_priv.email + ") does not exist")
+
+
+@router.put("/upload")
+async def edit_uploaded_list(
+    supply_list: SupplyList,
+    user: User = Depends(fastapi_users.get_current_active_user)
+):
+    new_uuid = uuid.uuid5(uuid.NAMESPACE_OID, ''.join(supply_list.list_of_supplies))
+
+    # If content is the same don't edit
+    if new_uuid == supply_list.old_id:
+        raise HTTPException(status_code=400, detail="The school supply list is the same")
+
+    else:
+        # Update school supplies metadata
+        metadata_update_result = supplies_metadata_db.edit_supply_list_metadata(
+            user, supply_list.old_id, new_uuid
+        )
+
+        # Update school supply
+        data_update_result = mongo_db_supplies.edit_supply_list(
+            supply_list.old_id, new_uuid, supply_list.list_of_supplies
+        )
+        if metadata_update_result.matched_count == 0 and data_update_result.matched_count == 0:
+            raise HTTPException(status_code=400, detail=f'No School Supply list with ID: {supply_list.old_id}')
+
+        return {"Message": "Success",
+                "school_supply_id": new_uuid}
+
