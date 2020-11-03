@@ -22,7 +22,8 @@ app.add_middleware(
 
 # Router to /login endpoint More info:
 # https://frankie567.github.io/fastapi-users/configuration/routers/auth/
-app.include_router(fastapi_users.get_auth_router(jwt_authentication), tags=["auth"])
+app.include_router(fastapi_users.get_auth_router(
+    jwt_authentication), tags=["auth"])
 
 # Router to /register endpoint More info:
 # https://frankie567.github.io/fastapi-users/configuration/routers/register/
