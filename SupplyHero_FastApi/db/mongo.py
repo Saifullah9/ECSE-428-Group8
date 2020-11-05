@@ -78,3 +78,11 @@ class MongoSessionRegular:
 
     def remove_supply_list(self, supply_uuid):
         return self.collection.delete_one({"id": supply_uuid})
+
+    def logout_active_user(self, user):
+        self.collection.update_one(
+            {"email": user.email},
+            {"$set": {"is_active": "false"}}
+        )
+        return {"user_email": user.email,
+                "logout_success": "true"}
