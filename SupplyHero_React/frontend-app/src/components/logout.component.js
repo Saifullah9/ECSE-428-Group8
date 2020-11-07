@@ -7,7 +7,7 @@ export default class Logout extends Component{
     constructor(props){
         super(props);
         this.onSubmit = this.onSubmit.bind(this);
-     
+
     /*
         this.state = {
             username: '',
@@ -16,11 +16,17 @@ export default class Logout extends Component{
         */
     }
 
-   
+
     onSubmit(e){
         e.preventDefault();
 
-    /*    
+
+    onLogout() {
+        window.sessionStorage.setItem('username', "");
+        window.sessionStorage.setItem('password', "");
+        window.location.replace('/login');
+    }
+    /*
         const user = {
             username:this.state.username,
             password:this.state.password,
@@ -30,14 +36,14 @@ export default class Logout extends Component{
         const dataForm = new FormData();
         dataForm.append('username', this.state.username);
         dataForm.append('password', this.state.password);
-    */    
+    */
 
         /*
         this is commented out till the post request is completed in the backend
         need to know the parameters needed for the request from the backend
         */
-      
-      //  axios.post('http://localhost:8000/logout') 
+
+      //  axios.post('http://localhost:8000/logout')
       //  .then(res => {console.log(res.data)
       //  localStorage.removeItem('Login_token')});
 
@@ -47,7 +53,7 @@ export default class Logout extends Component{
         }) */
 
        // window.location = '/login' // reroutes to login page after submitting
-        
+
     }
 
 
