@@ -6,11 +6,11 @@ import json
 from api.main import app
 
 client = TestClient(app)
-
+mongo_sesh = MongoSessionRegular(collection='users')
 # test registering a new user, loggin them in, and then loggiing out the account PERMANENTLY
 def test_logout_user():
-    rando = random.randint(1, 50000000)
-    email = "usertest" + str(rando) + "@example.com"
+    # rando = random.randint(1, 50000000)
+    email = "usertest890@example.com"
     password = "string"
 
     # add user in case not existing
@@ -46,7 +46,7 @@ def test_logout_user():
     logout_response = client.post("/logout", headers=headers)
     assert logout_response.json() == {"user_email": email, "logout_success": "true"}
 
-
+    mongo_sesh.delete_json({"email": email})
     # logout_response
     print('\n\n')
     print(response.json())
