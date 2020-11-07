@@ -7,7 +7,8 @@ from api.main import app
 
 client = TestClient(app)
 mongo_sesh = MongoSessionRegular(collection='users')
-# test registering a new user, loggin them in, and then loggiing out the account PERMANENTLY
+# test registering a new user, loggin them in, and then loggiing out the account PERMANENTLY. also
+# Confirms account can no longer log in and db contains is_active=false
 def test_logout_user():
     # rando = random.randint(1, 50000000)
     email = "usertest890@example.com"
@@ -46,7 +47,9 @@ def test_logout_user():
 
     logout_response = client.post("/logout", headers=headers)
     assert logout_response.json() == {"user_email": email, "logout_success": "true"}
-
+    login_response_final = client.post("/login", data={"username": email, "password": password})
+    assert json.loads(login_response_final.content)["detail"] == "LOGIN_BAD_CREDENTIALS"
+    assert mongo_sesh.find_json({"email": email})["is_active"] == 'false'
 
     # logout_response
     print('\n\n')
