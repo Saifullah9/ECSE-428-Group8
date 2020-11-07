@@ -12,7 +12,8 @@ def test_logout_user():
     # rando = random.randint(1, 50000000)
     email = "usertest890@example.com"
     password = "string"
-
+    if mongo_sesh.find_json({"email": email}) is not None:
+        mongo_sesh.delete_json({"email": email})
     # add user in case not existing
     response = client.post("/register", json={
         "email": email,
@@ -46,7 +47,7 @@ def test_logout_user():
     logout_response = client.post("/logout", headers=headers)
     assert logout_response.json() == {"user_email": email, "logout_success": "true"}
 
-    mongo_sesh.delete_json({"email": email})
+
     # logout_response
     print('\n\n')
     print(response.json())
