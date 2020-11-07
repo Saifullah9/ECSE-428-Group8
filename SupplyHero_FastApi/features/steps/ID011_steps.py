@@ -50,7 +50,8 @@ def step_impl(context):
 def step_impl(context):
 
     user = context.mongo_sesh.find_json({"email": context.email})
-
+    print(user)
+    print(user["is_active"])
     # print(user)
     # assert context.response.json()["email"] == context.register["email"]
     assert user["is_active"] == "false"
@@ -86,5 +87,5 @@ def step_impl(context):
 
 @then('user is prompted "You are not logged in!" message')
 def step_impl(context):
-    # print(context.logout_response.content)
+    print(context.logout_response.content)
     assert json.loads(context.logout_response.content)["detail"] == "Unauthorized"
