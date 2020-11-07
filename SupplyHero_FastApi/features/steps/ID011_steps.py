@@ -1,5 +1,5 @@
 from behave import *
-from db.mongo import MongoSession
+from db.mongo import MongoSessionRegular
 from fastapi.testclient import TestClient
 from fastapi import UploadFile
 import jwt
@@ -16,7 +16,7 @@ Step Definitions for ID005_Register_Account
 @given('user is logged on')
 def step_impl(context):
     # rando = random.randint(1, 50000000)
-    context.mongo_sesh = MongoSession(collection='users')
+    context.mongo_sesh = MongoSessionRegular(collection='users')
     context.email = "usertest690@example.com"
 
     context.password = "string"
@@ -65,7 +65,7 @@ def step_impl(context):
 #Error flow
 @given('user is not logged on')
 def step_impl(context):
-    context.mongo_sesh = MongoSession(collection='users')
+    context.mongo_sesh = MongoSessionRegular(collection='users')
     # rando = random.randint(1, 50000000)
     context.email = "usertest790@example.com"
     context.password = "string"

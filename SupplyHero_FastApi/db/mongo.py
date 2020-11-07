@@ -20,6 +20,14 @@ class MongoSession:
     def delete_json(self, document):
         return self.collection.delete_one(document)
 
+    def logout_active_user(self, user):
+        self.collection.update_one(
+            {"email": user.email},
+            {"$set": {"is_active": "false"}}
+        )
+        return {"user_email": user.email,
+                "logout_success": "true"}
+
 
 class MongoSessionRegular:
     def __init__(self, collection=None, database_name="supply-hero"):
@@ -86,3 +94,11 @@ class MongoSessionRegular:
         )
         return {"user_email": user.email,
                 "logout_success": "true"}
+
+    def reactivate_user(self, user):
+        self.collection.update_one(
+            {"email": user.email},
+            {"$set": {"is_active": "true"}}
+        )
+        return {"user_email": user.email,
+                "reactivate success": "true"}

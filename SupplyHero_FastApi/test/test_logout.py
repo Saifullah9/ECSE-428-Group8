@@ -1,12 +1,12 @@
 from fastapi.testclient import TestClient
-from db.mongo import MongoSession
+from db.mongo import MongoSessionRegular
 
 import random
 import json
 from api.main import app
 
 client = TestClient(app)
-mongo_sesh = MongoSession(collection='users')
+mongo_sesh = MongoSessionRegular(collection='users')
 # test registering a new user, loggin them in, and then loggiing out the account PERMANENTLY
 def test_logout_user():
     # rando = random.randint(1, 50000000)
