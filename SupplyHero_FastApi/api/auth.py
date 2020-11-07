@@ -10,7 +10,7 @@ router2 = APIRouter()
 
 # Database for users
 mongo_db_users = MongoSession(collection="users")
-mongo_db_users_reg = MongoSession(collection="users")
+mongo_db_users_reg = MongoSessionRegular(collection="users")
 user_db = MongoDBUserDatabase(UserDB, mongo_db_users.collection)
 
 # User Management
