@@ -77,6 +77,19 @@ class MongoSessionRegular:
             upsert=True,
         )
 
+    # If the id already exists, it doesn't do anything
+    def add_supply_list_privilege(self, user_id, supply_uuid, privilege_type):
+        if privilege_type == "ADMIN":
+            return self.collection.update(
+                {"id": supply_uuid},
+                {"$addToSet": {"admin_ids": user_id}}
+            )
+        else:  # "READ_ONLY"
+            return self.collection.update(
+                {"id": supply_uuid},
+                {"$addToSet": {"read_only_ids": user_id}}
+            )
+
     def remove_supply_list_metadata(self, email, supply_uuid):
         return self.collection.update_one(
             {"email": email},
@@ -86,6 +99,7 @@ class MongoSessionRegular:
 
     def remove_supply_list(self, supply_uuid):
         return self.collection.delete_one({"id": supply_uuid})
+
 
     def logout_active_user(self, user):
         self.collection.update_one(
@@ -102,3 +116,15 @@ class MongoSessionRegular:
         )
         return {"user_email": user.email,
                 "reactivate success": "true"}
+
+    def edit_supply_list_metadata(self, user, old_id, new_id):
+        return self.collection.update_one(
+            {"email": user.email, "school_supply_ids": old_id},
+            {"$set": {"school_supply_ids.$": new_id}}
+        )
+
+    def edit_supply_list(self, old_id, new_id, list_of_supplies):
+        return self.collection.update_one(
+            {"id": old_id},
+            {"$set": {"id": new_id, "list_of_supplies": list_of_supplies}}
+        )

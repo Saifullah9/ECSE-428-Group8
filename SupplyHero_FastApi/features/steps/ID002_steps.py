@@ -1,5 +1,5 @@
 from behave import *
-from db.mongo import MongoSession, MongoSessionRegular
+from db.mongo import MongoSessionRegular
 from fastapi.testclient import TestClient
 from fastapi import UploadFile
 from api import main
@@ -9,6 +9,7 @@ from uuid import UUID
 Step Definitions for ID002_Upload_Image  
 """
 
+    
 @given('user is selecting an image')
 def step_impl(context):
     image_file = open("features/test_files/morris_supply.png", "rb")
@@ -32,7 +33,8 @@ def step_impl(context):
     assert response_json['Message'] == 'Success'
     metadata_sess = MongoSessionRegular(collection="school_supplies_metadata")
     data_sess = MongoSessionRegular(collection="school_supplies")
-    metadata_sess.remove_supply_list_metadata(context.login_info['username'], UUID(response_json['school_supply_id']))
+    response_json = context.response.json()
+    metadata_sess.delete_json({"email":context.login_info['username']})
     delete_result = data_sess.remove_supply_list(UUID(response_json['school_supply_id']))
 
 
