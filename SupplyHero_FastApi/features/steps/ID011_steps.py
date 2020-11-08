@@ -9,11 +9,11 @@ from api import main
 import json
 
 """
-Step Definitions for ID005_Register_Account 
+Step Definitions for ID011_LogOut 
 """
 
 
-@given('user is logged on')
+@given('user is logged on with active account')
 def step_impl(context):
     # rando = random.randint(1, 50000000)
     context.mongo_sesh = MongoSessionRegular(collection='users')
@@ -63,7 +63,7 @@ def step_impl(context):
 
 
 #Error flow
-@given('user is not logged on')
+@given('user is not logged on with active account')
 def step_impl(context):
     context.mongo_sesh = MongoSessionRegular(collection='users')
     # rando = random.randint(1, 50000000)
