@@ -132,11 +132,13 @@ async def edit_uploaded_list(
     supply_list: SupplyList,
     user: User = Depends(fastapi_users.get_current_active_user)
 ):
-    new_uuid = uuid.uuid5(uuid.NAMESPACE_OID, ''.join(supply_list.list_of_supplies))
+    new_uuid = uuid.uuid5(uuid.NAMESPACE_OID, ''.join(
+        supply_list.list_of_supplies))
 
     # If content is the same don't edit
     if new_uuid == supply_list.old_id:
-        raise HTTPException(status_code=400, detail="The school supply list is the same")
+        raise HTTPException(
+            status_code=400, detail="The school supply list is the same")
 
     else:
         # Update school supplies metadata
@@ -149,8 +151,8 @@ async def edit_uploaded_list(
             supply_list.old_id, new_uuid, supply_list.list_of_supplies
         )
         if metadata_update_result.matched_count == 0 and data_update_result.matched_count == 0:
-            raise HTTPException(status_code=400, detail=f'No School Supply list with ID: {supply_list.old_id}')
+            raise HTTPException(
+                status_code=400, detail=f'No School Supply list with ID: {supply_list.old_id}')
 
         return {"Message": "Success",
                 "school_supply_id": new_uuid}
-
