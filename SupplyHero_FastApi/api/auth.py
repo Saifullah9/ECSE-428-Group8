@@ -35,10 +35,11 @@ async def edit_user_profile(
     user_update: UserUpdate,
     user: User = Depends(fastapi_users.get_current_active_user)
 ):
-
+    # Email and Password field not provided in JSON argument
     if user_update.email is None and user_update.password is None:
         raise HTTPException(status_code=400, detail="An email or password is needed.")
 
+    # Email field provided
     current_email = user.email
     if user_update.email is not None:
         new_email = user_update.email
@@ -53,6 +54,7 @@ async def edit_user_profile(
             raise HTTPException(
             status_code=400, detail="Email is already used.")
     
+    # password field provided
     if user_update.password is not None:
         new_password = user_update.password
         hashed_password = get_password_hash(new_password)

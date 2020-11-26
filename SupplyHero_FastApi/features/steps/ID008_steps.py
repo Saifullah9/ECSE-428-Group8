@@ -42,6 +42,8 @@ def step_impl(context):
     data_sess = MongoSessionRegular(collection="school_supplies")
     metadata_sess.delete_json({"email": context.login['username']})
     data_sess.remove_supply_list(UUID(context.school_supply_id))
+    user_sess = MongoSessionRegular(collection='users')
+    user_sess.delete_json({"email": context.login['username']})
 
 @when("user has not uploaded any list of school supplies")
 def step_impl(context):
@@ -52,7 +54,6 @@ def step_impl(context):
 def step_impl(context, error_message):
     assert context.response_download_json["detail"] == error_message
     metadata_sess = MongoSessionRegular(collection="school_supplies_metadata")
-    data_sess = MongoSessionRegular(collection="school_supplies")
     metadata_sess.delete_json({"email": context.login['username']})
     user_sess = MongoSessionRegular(collection='users')
-    user_sess.delete_json({"email": "kaldamzxmczk12@hotmail.com"})
+    user_sess.delete_json({"email": context.login['username']})
