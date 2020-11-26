@@ -8,7 +8,9 @@ from model.user import User
 from model.supply_list import SupplyListPrivilege
 from pdf2image import convert_from_bytes
 from PIL import Image
+from pydantic import BaseModel
 
+import uuid
 from api.auth import fastapi_users
 
 router = APIRouter()
@@ -154,3 +156,20 @@ async def edit_uploaded_list(
         return {"Message": "Success",
                 "school_supply_id": new_uuid}
 
+
+class EmailTest(BaseModel):
+    email: str
+
+
+class SupplyTest(BaseModel):
+    old_id: str
+
+@router.post("/deleteList")
+async def remove_supply_list_from_user(
+        supply_list_id,
+        email,
+):
+    id_to_remove = supply_list_id.old_id
+    id_to_remove = uuid.UUID(id_to_remove)
+    supplies_metadata_db.remove_supply_list_metadata(email, id_to_remove)
+    return {"Message": "Success, id has been removed"}
