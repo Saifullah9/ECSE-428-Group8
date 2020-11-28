@@ -157,12 +157,6 @@ async def edit_uploaded_list(
                 "school_supply_id": new_uuid}
 
 
-class EmailTest(BaseModel):
-    email: str
-
-
-class SupplyTest(BaseModel):
-    old_id: str
 
 @router.delete("/List")
 async def remove_supply_list_from_user(
