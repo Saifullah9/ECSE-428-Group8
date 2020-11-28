@@ -19,7 +19,7 @@ def test_supply_list_add_user():
     read_response = client.post("/addUser", json={
         "email": "targetuser@gmail.com",
         "privilege_type": "READ_ONLY",
-        "supply_list_id": "bb7925b7-741c-4448-8b3a-160f39ae5204"
+        "supply_list_id": "bd1b9c90-2130-5776-88ff-87bf7e729668"
     })
     read_response_json = read_response.json()
     assert read_response_json["Message"] == "Success"
@@ -28,8 +28,32 @@ def test_supply_list_add_user():
     admin_response = client.post("/addUser", json={
         "email": "targetuser@gmail.com",
         "privilege_type": "ADMIN",
-        "supply_list_id": "bb7925b7-741c-4448-8b3a-160f39ae5204"
+        "supply_list_id": "bd1b9c90-2130-5776-88ff-87bf7e729668"
     })
 
     admin_response_json = admin_response.json()
     assert admin_response_json["Message"] == "Success"
+
+
+
+    # add a user as readonly to that supply list
+    read_response = client.post("/deleteUser", json={
+        "email": "targetuser@gmail.com",
+        "privilege_type": "READ_ONLY",
+        "supply_list_id": "bd1b9c90-2130-5776-88ff-87bf7e729668"
+    })
+    read_response_json = read_response.json()
+    assert read_response_json["Message"] == "Success"
+
+    # add a user as readonly to that supply list
+    read_response = client.post("/deleteUser", json={
+        "email": "targetuser@gmail.com",
+        "privilege_type": "ADMIN",
+        "supply_list_id": "bd1b9c90-2130-5776-88ff-87bf7e729668"
+    })
+    read_response_json = read_response.json()
+    assert read_response_json["Message"] == "Success"
+
+
+
+

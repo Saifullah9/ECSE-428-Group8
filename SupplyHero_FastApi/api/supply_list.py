@@ -126,6 +126,40 @@ async def create_uploaded_file(
             status_code=400, detail="Target user (" +
             supply_list_priv.email + ") does not exist")
 
+@router.delete("/deleteUser")
+async def delete_user(
+    supply_list_priv: SupplyListPrivilege,
+):
+    # Given an email address, privilege_type, and supplyList_id
+    # eg.
+    # {
+    # "email": "targetuser@gmail.com",
+    # "privilege_type": "READ_ONLY",
+    # "supply_list_id": "c074a20e-5025-5814-996f-af2efe1939a4"
+    # }
+    target_user = mongo_db_users.find_json(
+        {"email": supply_list_priv.email})
+    if target_user:
+        supply_list = mongo_db_supplies.find_json(
+            {"id": supply_list_priv.supply_list_id})
+        if supply_list:
+            if supply_list_priv.privilege_type == "ADMIN" or supply_list_priv.privilege_type == "READ_ONLY":
+                mongo_db_supplies.remove_supply_list_privilege(
+                    target_user['id'], supply_list['id'], supply_list_priv.privilege_type)
+                return {"Message": "Success",
+                        "id": supply_list['id'],
+                        }
+            else:  # TODO not needed as the FRONTEND can only provide with 2 options
+                raise HTTPException(
+                    status_code=400, detail="The designated privilege does not exist")
+        else:  # TODO not needed as the FRONTEND can only provide with the supply lists where I have admin rights
+            raise HTTPException(
+                status_code=400, detail="That supply list does not exist")
+
+    else:
+        raise HTTPException(
+            status_code=400, detail="Target user (" +
+            supply_list_priv.email + ") does not exist")
 
 @router.put("/upload")
 async def edit_uploaded_list(

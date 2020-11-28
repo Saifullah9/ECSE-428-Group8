@@ -90,6 +90,19 @@ class MongoSessionRegular:
                 {"$addToSet": {"read_only_ids": user_id}}
             )
 
+    def remove_supply_list_privilege(self,user_id, supply_uuid, privilege_type):
+        if privilege_type == "ADMIN":
+            return self.collection.update(
+                {"id": supply_uuid},
+                {"$pull": {"admin_ids": user_id}}
+            )
+        else:
+            return self.collection.update(
+                {"id": supply_uuid},
+                {"$pull": {"read_only_ids": user_id}}
+            )
+
+
     def remove_supply_list_metadata(self, email, supply_uuid):
         return self.collection.update_one(
             {"email": email},
