@@ -164,12 +164,19 @@ class EmailTest(BaseModel):
 class SupplyTest(BaseModel):
     old_id: str
 
-@router.post("/deleteList")
+@router.delete("/List")
 async def remove_supply_list_from_user(
         supply_list_id,
         email,
 ):
-    id_to_remove = supply_list_id.old_id
+    id_to_remove = supply_list_id
     id_to_remove = uuid.UUID(id_to_remove)
-    supplies_metadata_db.remove_supply_list_metadata(email, id_to_remove)
-    return {"Message": "Success, id has been removed"}
+    if supplies_metadata_db.remove_supply_list_metadata(email, id_to_remove).modified_count == 0:
+        return {"Message": "No Changes Made"}
+    else:
+        return {"Message": "Success, id has been removed"}
+
+#
+# @router.delete("/ListLogin")
+# async def remove_list_login(supply_list_id, user: User = Depends(fastapi_users.get_current_active_user)):
+#     return supplies_metadata_db.remove_supply_list_metadata(user.email, uuid.UUID(supply_list_id))
