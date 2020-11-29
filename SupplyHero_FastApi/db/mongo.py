@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import motor.motor_asyncio
+from pydantic import BaseModel
 
 
 class MongoSession:
@@ -130,3 +131,31 @@ class MongoSessionRegular:
             {"id": old_id},
             {"$set": {"id": new_id, "list_of_supplies": list_of_supplies}}
         )
+
+    class EmailTest(BaseModel):
+        email: str
+
+    def upsert_supply_list_metadata_email(self, email, supply_uuid):
+        update_result = self.collection.update_one(
+            {
+                "$and": [
+                    {"email": email},
+                    {"school_supply_ids": {"$nin": [supply_uuid]}},
+                ]
+            },
+            {"$push": {"school_supply_ids": supply_uuid}},
+            upsert=False,
+        )
+        if update_result.modified_count > 0:
+            return update_result
+        else:
+            return self.collection.update_one(
+                {"email": email},
+                {
+                    "$setOnInsert": {
+                        "email": email,
+                        "school_supply_ids": [supply_uuid],
+                    }
+                },
+                upsert=True,
+            )
