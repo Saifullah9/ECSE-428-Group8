@@ -9,6 +9,15 @@ from uuid import UUID
 Step Definitions for ID008_Display_School_Supply_List
 """
 
+@given('user logged in to the website')
+def step_impl(context):
+    context.test_client = TestClient(main.app)
+    context.register = {"email": "kaldamzxmczk12@hotmail.com", "password": "a!s@d#" }
+    context.response_register = context.test_client.post("/register", json=context.register)
+    context.login = {"username": "kaldamzxmczk12@hotmail.com", "password": "a!s@d#"}
+    context.response_login = context.test_client.post("/login", data=context.login)
+    context.access_token = context.response_login.json()["access_token"]
+
 @given("user has already uploaded at least one supply list")
 def step_impl(context):
     image_file = open("features/test_files/morris_supply.pdf", "rb")
@@ -22,6 +31,7 @@ def step_impl(context):
 
 @when("user requests all school supply lists")
 def step_impl(context):
+    context.headers = {"Authorization": "Bearer " + context.access_token}
     context.response_download = context.test_client.get("/download", headers=context.headers)
     context.response_download_json = context.response_download.json()
 
@@ -31,7 +41,9 @@ def step_impl(context):
     metadata_sess = MongoSessionRegular(collection="school_supplies_metadata")
     data_sess = MongoSessionRegular(collection="school_supplies")
     metadata_sess.delete_json({"email": context.login['username']})
-    data_sess.remove_supply_list(UUID(context.response_edit_json['school_supply_id']))
+    data_sess.remove_supply_list(UUID(context.school_supply_id))
+    user_sess = MongoSessionRegular(collection='users')
+    user_sess.delete_json({"email": context.login['username']})
 
 @when("user has not uploaded any list of school supplies")
 def step_impl(context):
@@ -40,10 +52,8 @@ def step_impl(context):
 
 @then('a "{error_message}" message is displayed')
 def step_impl(context, error_message):
-    assert context.response_edit_error_json["detail"] == error_message
+    assert context.response_download_json["detail"] == error_message
     metadata_sess = MongoSessionRegular(collection="school_supplies_metadata")
-    data_sess = MongoSessionRegular(collection="school_supplies")
     metadata_sess.delete_json({"email": context.login['username']})
-    data_sess.remove_supply_list(UUID(context.response_edit_json['school_supply_id']))
     user_sess = MongoSessionRegular(collection='users')
-    user_sess.delete_json({"email": "kaldamzxmczk12@hotmail.com"})
+    user_sess.delete_json({"email": context.login['username']})
