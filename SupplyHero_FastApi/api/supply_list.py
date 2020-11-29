@@ -40,14 +40,14 @@ async def create_uploaded_file(
     else:
         raise HTTPException(status_code=400, detail="File is not an image.")
     supply_arr = [elem for elem in supply_arr if elem]
-
+    checklist_marker = [False] * len(supply_arr)
     # Store Metadata for Supply List & Data for Supply List
     # Generate a unique UUID based on string
     supply_uuid = uuid.uuid5(uuid.NAMESPACE_OID, ''.join(supply_arr))
 
     # Metadata to DB
     metadata_update_result = supplies_metadata_db.upsert_supply_list_metadata(
-        user, supply_uuid
+        user, supply_uuid, checklist_marker
     )
 
     # Supply List Data to DB
@@ -82,6 +82,8 @@ async def get_all_lists(
         supply_ids = user_supply_ids["school_supply_ids"]
         lists = [mongo_db_supplies.find_json(
             {"id": id}, {"_id": 0}) for id in supply_ids]
+        for list_index, supply_list in enumerate(lists):
+            supply_list['list_of_supplies'] = [[item, user_supply_ids["school_supply_checklist"][list_index][item_index]] for item_index, item in enumerate(supply_list['list_of_supplies'])]
         response["supply_lists"] = lists
         return response
     else:
@@ -153,4 +155,3 @@ async def edit_uploaded_list(
 
         return {"Message": "Success",
                 "school_supply_id": new_uuid}
-

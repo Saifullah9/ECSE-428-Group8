@@ -45,7 +45,7 @@ class MongoSessionRegular:
     def delete_json(self, document):
         return self.collection.delete_one(document)
 
-    def upsert_supply_list_metadata(self, user, supply_uuid):
+    def upsert_supply_list_metadata(self, user, supply_uuid, checklist_marker):
         update_result = self.collection.update_one(
             {
                 "$and": [
@@ -53,7 +53,8 @@ class MongoSessionRegular:
                     {"school_supply_ids": {"$nin": [supply_uuid]}},
                 ]
             },
-            {"$push": {"school_supply_ids": supply_uuid}},
+            {"$push": {"school_supply_ids": supply_uuid,
+                       "school_supply_checklist": checklist_marker}},
             upsert=False,
         )
         if update_result.modified_count > 0:
@@ -65,6 +66,7 @@ class MongoSessionRegular:
                     "$setOnInsert": {
                         "email": user.email,
                         "school_supply_ids": [supply_uuid],
+                        "school_supply_checklist": [checklist_marker]
                     }
                 },
                 upsert=True,
