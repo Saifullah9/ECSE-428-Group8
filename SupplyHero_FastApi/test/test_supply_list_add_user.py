@@ -21,8 +21,8 @@ def test_supply_list_add_user():
         "privilege_type": "READ_ONLY",
         "supply_list_id": "bd1b9c90-2130-5776-88ff-87bf7e729668"
     })
-    read_response_json = read_response.json()
-    assert read_response_json["Message"] == "Success"
+    add_read_response_json = read_response.json()
+    assert add_read_response_json["Message"] == "Success"
 
     # add a user as admin to that supply list
     admin_response = client.post("/addUser", json={
@@ -31,29 +31,23 @@ def test_supply_list_add_user():
         "supply_list_id": "bd1b9c90-2130-5776-88ff-87bf7e729668"
     })
 
-    admin_response_json = admin_response.json()
-    assert admin_response_json["Message"] == "Success"
+    add_admin_response_json = admin_response.json()
+    assert add_admin_response_json["Message"] == "Success"
 
-
-
-    # add a user as readonly to that supply list
-    read_response = client.post("/deleteUser", json={
+    # remove a user as readonly to from supply list
+    read_response = client.delete("/deleteUser", json={
         "email": "targetuser@gmail.com",
         "privilege_type": "READ_ONLY",
         "supply_list_id": "bd1b9c90-2130-5776-88ff-87bf7e729668"
     })
-    read_response_json = read_response.json()
-    assert read_response_json["Message"] == "Success"
+    rm_read_response_json = read_response.json()
+    assert rm_read_response_json["Message"] == "Success"
 
-    # add a user as readonly to that supply list
-    read_response = client.post("/deleteUser", json={
+    # remove a user as admin to from supply list
+    read_response = client.delete("/deleteUser", json={
         "email": "targetuser@gmail.com",
         "privilege_type": "ADMIN",
         "supply_list_id": "bd1b9c90-2130-5776-88ff-87bf7e729668"
     })
-    read_response_json = read_response.json()
-    assert read_response_json["Message"] == "Success"
-
-
-
-
+    rm_admin_response_json = read_response.json()
+    assert rm_admin_response_json["Message"] == "Success"
