@@ -85,7 +85,8 @@ async def get_all_lists(
         lists = [mongo_db_supplies.find_json(
             {"id": id}, {"_id": 0}) for id in supply_ids]
         for list_index, supply_list in enumerate(lists):
-            supply_list['list_of_supplies'] = [[item, user_supply_ids["school_supply_checklist"][list_index][item_index]] for item_index, item in enumerate(supply_list['list_of_supplies'])]
+            supply_list['list_of_supplies'] = [[item, user_supply_ids["school_supply_checklist"]
+                                                [list_index][item_index]] for item_index, item in enumerate(supply_list['list_of_supplies'])]
         response["supply_lists"] = lists
         return response
     else:
@@ -131,16 +132,54 @@ async def create_uploaded_file(
             supply_list_priv.email + ") does not exist")
 
 
+@router.delete("/deleteUser")
+async def delete_user(
+    supply_list_priv: SupplyListPrivilege,
+):
+    # Given an email address, privilege_type, and supplyList_id
+    # eg.
+    # {
+    # "email": "targetuser@gmail.com",
+    # "privilege_type": "READ_ONLY",
+    # "supply_list_id": "c074a20e-5025-5814-996f-af2efe1939a4"
+    # }
+    target_user = mongo_db_users.find_json(
+        {"email": supply_list_priv.email})
+    if target_user:
+        supply_list = mongo_db_supplies.find_json(
+            {"id": supply_list_priv.supply_list_id})
+        if supply_list:
+            if supply_list_priv.privilege_type == "ADMIN" or supply_list_priv.privilege_type == "READ_ONLY":
+                mongo_db_supplies.remove_supply_list_privilege(
+                    target_user['id'], supply_list['id'], supply_list_priv.privilege_type)
+                return {"Message": "Success",
+                        "id": supply_list['id'],
+                        }
+            else:  # TODO not needed as the FRONTEND can only provide with 2 options
+                raise HTTPException(
+                    status_code=400, detail="The designated privilege does not exist")
+        else:  # TODO not needed as the FRONTEND can only provide with the supply lists where I have admin rights
+            raise HTTPException(
+                status_code=400, detail="That supply list does not exist")
+
+    else:
+        raise HTTPException(
+            status_code=400, detail="Target user (" +
+            supply_list_priv.email + ") does not exist")
+
+
 @router.put("/upload")
 async def edit_uploaded_list(
     supply_list: SupplyList,
     user: User = Depends(fastapi_users.get_current_active_user)
 ):
-    new_uuid = uuid.uuid5(uuid.NAMESPACE_OID, ''.join(supply_list.list_of_supplies))
+    new_uuid = uuid.uuid5(uuid.NAMESPACE_OID, ''.join(
+        supply_list.list_of_supplies))
 
     # If content is the same don't edit
     if new_uuid == supply_list.old_id:
-        raise HTTPException(status_code=400, detail="The school supply list is the same")
+        raise HTTPException(
+            status_code=400, detail="The school supply list is the same")
 
     else:
         # Update school supplies metadata
@@ -153,10 +192,12 @@ async def edit_uploaded_list(
             supply_list.old_id, new_uuid, supply_list.list_of_supplies
         )
         if metadata_update_result.matched_count == 0 and data_update_result.matched_count == 0:
-            raise HTTPException(status_code=400, detail=f'No School Supply list with ID: {supply_list.old_id}')
+            raise HTTPException(
+                status_code=400, detail=f'No School Supply list with ID: {supply_list.old_id}')
 
         return {"Message": "Success",
                 "school_supply_id": new_uuid}
+
 
 @router.delete("/List")
 async def remove_supply_list_from_user(
@@ -169,4 +210,3 @@ async def remove_supply_list_from_user(
         return {"Message": "No Changes Made"}
     else:
         return {"Message": "Success, id has been removed"}
-
