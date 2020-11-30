@@ -85,7 +85,8 @@ async def get_all_lists(
         lists = [mongo_db_supplies.find_json(
             {"id": id}, {"_id": 0}) for id in supply_ids]
         for list_index, supply_list in enumerate(lists):
-            supply_list['list_of_supplies'] = [[item, user_supply_ids["school_supply_checklist"][list_index][item_index]] for item_index, item in enumerate(supply_list['list_of_supplies'])]
+            supply_list['list_of_supplies'] = [[item, user_supply_ids["school_supply_checklist"]
+                                                [list_index][item_index]] for item_index, item in enumerate(supply_list['list_of_supplies'])]
         response["supply_lists"] = lists
         return response
     else:
@@ -130,6 +131,7 @@ async def create_uploaded_file(
             status_code=400, detail="Target user (" +
             supply_list_priv.email + ") does not exist")
 
+
 @router.delete("/deleteUser")
 async def delete_user(
     supply_list_priv: SupplyListPrivilege,
@@ -165,6 +167,7 @@ async def delete_user(
             status_code=400, detail="Target user (" +
             supply_list_priv.email + ") does not exist")
 
+
 @router.put("/upload")
 async def edit_uploaded_list(
     supply_list: SupplyList,
@@ -194,7 +197,7 @@ async def edit_uploaded_list(
 
         return {"Message": "Success",
                 "school_supply_id": new_uuid}
-Supply-addUser-test
+
 
 @router.delete("/List")
 async def remove_supply_list_from_user(
@@ -207,5 +210,3 @@ async def remove_supply_list_from_user(
         return {"Message": "No Changes Made"}
     else:
         return {"Message": "Success, id has been removed"}
-
-master
